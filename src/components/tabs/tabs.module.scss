@@ -1,0 +1,38 @@
+@import '../../variables.scss';
+.tabs{
+    display: flex;
+    background-color: $background-color-element;
+    border-radius: $border-radius;
+    border: border;
+    color: $color-text-dark;
+    text-transform: uppercase;
+    font-weight: 600;
+    overflow: hidden;
+    line-height: 20px;
+}
+.tab{
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+.tab:not(:first-of-type){
+    border-left: $border;
+}
+.tab:hover{
+    cursor: pointer;
+    background-color: $hover-color;
+    transition: all 0.3s ease;
+}
+.tab_active{
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $background-color-active;
+    border: 1px solid $background-color-active;
+    color: white;
+    padding: 15px;
+}
+

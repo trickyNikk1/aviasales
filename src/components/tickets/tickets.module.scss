@@ -1,0 +1,18 @@
+.tickets {
+    display: flex;
+    flex-direction: column;
+    
+    gap: 20px;
+}
+.button_show {
+    background-color: #2196F3;
+    border: 1px solid #2196F3;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+.button_show:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
