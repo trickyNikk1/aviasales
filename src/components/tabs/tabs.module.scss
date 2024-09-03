@@ -1,23 +1,27 @@
 @import '../../variables.scss';
 .tabs{
     display: flex;
-    background-color: $background-color-element;
     border-radius: $border-radius;
-    border: border;
-    color: $color-text-dark;
-    text-transform: uppercase;
-    font-weight: 600;
+    border: $border;
     overflow: hidden;
-    line-height: 20px;
 }
 .tab{
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background-color: $background-color-element;
+    color: $color-text-dark;
+    border: none;
+    margin: 0;
+    padding: 0;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 15px;
 }
-.tab:not(:first-of-type){
+.tab:not(:first-child){
     border-left: $border;
 }
 .tab:hover{
@@ -26,6 +30,10 @@
     transition: all 0.3s ease;
 }
 .tab_active{
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     flex-grow: 1;
     display: flex;
     align-items: center;
@@ -35,4 +43,5 @@
     color: white;
     padding: 15px;
 }
+
 

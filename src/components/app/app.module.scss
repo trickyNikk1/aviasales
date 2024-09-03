@@ -20,11 +20,11 @@
     &__inner {
         display: flex;
         flex-direction: column;
-        max-width: 502px;
+        flex-basis: 502px;
         gap: 20px;
     }
     @media (max-width: 725px) {
-        flex-direction: column;
+        flex-wrap: wrap;
         align-items: center;
     }
     @media (max-width: 520px) {
