@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../hook'
 import { setTab } from '../../store/appSlice'
-import type { TabType } from '../../store/appSlice'
+import type { TabType } from '../../store/types'
 
 import styles from './tabs.module.scss'
 

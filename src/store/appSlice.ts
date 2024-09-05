@@ -1,19 +1,18 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 
-export type FilterType = 'all' | 'no-transfers' | '1-transfer' | '2-transfers' | '3-transfers'
-type FiltersType = {
-  [K in FilterType]: boolean
-}
-export type TabType = 'cheapest' | 'fastest' | 'optimal'
-type AppState = {
-  tab: TabType
-  filters: FiltersType
-}
+import type { AppState, FilterType, ToggleType, TabType } from './types'
 
-export type ToggleType = {
-  name: FilterType
-  checked: boolean
-}
+export const fetchSearchId = createAsyncThunk('app/fetchSearchId', async () => {
+  const response = await fetch('https://aviasales-test-api.kata.academy/search')
+  const data = await response.json()
+  return data.searchId
+})
+
+export const fetchTickets = createAsyncThunk('app/fetchTickets', async (searchId: string) => {
+  const response = await fetch(`https://aviasales-test-api.kata.academy/tickets?searchId=${searchId}`)
+  const data = await response.json()
+  return data
+})
 
 const initialState: AppState = {
   tab: 'cheapest',
@@ -24,6 +23,10 @@ const initialState: AppState = {
     '2-transfers': true,
     '3-transfers': true,
   },
+  loading: 'idle',
+  error: null,
+  searchId: null,
+  tickets: [],
 }
 
 const appSlice = createSlice({
@@ -49,10 +52,36 @@ const appSlice = createSlice({
       }
     },
     setTab(state, action: PayloadAction<TabType>) {
-      console.log(state)
-      console.log(action)
       state.tab = action.payload
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchSearchId.pending, (state) => {
+      state.loading = 'pending'
+      state.error = null
+    })
+    builder.addCase(fetchSearchId.fulfilled, (state, action) => {
+      state.loading = 'succeeded'
+      state.searchId = action.payload
+      state.error = null
+    })
+    builder.addCase(fetchSearchId.rejected, (state, action) => {
+      state.loading = 'failed'
+      state.error = action.error.message ? action.error.message : 'Unknown error'
+    })
+    builder.addCase(fetchTickets.pending, (state) => {
+      state.loading = 'pending'
+      state.error = null
+    })
+    builder.addCase(fetchTickets.fulfilled, (state, action) => {
+      state.loading = 'succeeded'
+      state.tickets = action.payload.tickets
+      state.error = null
+    })
+    builder.addCase(fetchTickets.rejected, (state, action) => {
+      state.loading = 'failed'
+      state.error = action.error.message ? action.error.message : 'Unknown error'
+    })
   },
 })
 

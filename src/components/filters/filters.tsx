@@ -2,7 +2,7 @@ import React from 'react'
 
 import { toggleFilters } from '../../store/appSlice'
 import { useAppDispatch, useAppSelector } from '../../hook'
-import type { FilterType } from '../../store/appSlice'
+import type { FilterType } from '../../store/types'
 
 import styles from './filters.module.scss'
 
