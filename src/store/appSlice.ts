@@ -27,6 +27,7 @@ const initialState: AppState = {
   error: null,
   searchId: null,
   tickets: [],
+  visibleTicketsLength: 5,
 }
 
 const appSlice = createSlice({
@@ -53,6 +54,9 @@ const appSlice = createSlice({
     },
     setTab(state, action: PayloadAction<TabType>) {
       state.tab = action.payload
+    },
+    addVisibleTickets(state, action) {
+      state.visibleTicketsLength = state.visibleTicketsLength + action.payload
     },
   },
   extraReducers: (builder) => {
@@ -85,5 +89,5 @@ const appSlice = createSlice({
   },
 })
 
-export const { setTab, toggleFilters } = appSlice.actions
+export const { setTab, toggleFilters, addVisibleTickets } = appSlice.actions
 export default appSlice.reducer

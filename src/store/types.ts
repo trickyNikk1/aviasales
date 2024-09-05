@@ -48,6 +48,7 @@ export type AppState = {
   error: string | null
   searchId: string | null
   tickets: TicketType[]
+  visibleTicketsLength: number
 }
 
 export type ToggleType = {
