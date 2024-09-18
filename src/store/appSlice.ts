@@ -1,16 +1,18 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createAsyncThunk, nanoid, current } from '@reduxjs/toolkit'
 
-import type { AppState, FilterType, ToggleType, TabType } from './types'
+import Aviasales from '../services/aviasales'
 
-export const fetchSearchId = createAsyncThunk('app/fetchSearchId', async () => {
-  const response = await fetch('https://aviasales-test-api.kata.academy/search')
-  const data = await response.json()
-  return data.searchId
+import type { AppState, FilterType, ToggleType, TabType, TicketType } from './types'
+
+const aviasales = new Aviasales()
+
+export const getSearchId = createAsyncThunk('app/getSearchId', async () => {
+  const searchId = await aviasales.getSearchId()
+  return searchId
 })
 
-export const fetchTickets = createAsyncThunk('app/fetchTickets', async (searchId: string) => {
-  const response = await fetch(`https://aviasales-test-api.kata.academy/tickets?searchId=${searchId}`)
-  const data = await response.json()
+export const getTickets = createAsyncThunk('app/getTickets', async (searchId: string) => {
+  const data = await aviasales.getTickets(searchId)
   return data
 })
 
@@ -27,13 +29,61 @@ const initialState: AppState = {
   error: null,
   searchId: null,
   tickets: [],
+  filteredTickets: [],
   visibleTicketsLength: 5,
+  stop: false,
 }
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    filterTickets(state) {
+      const { tickets } = current(state)
+      if (state.filters.all) {
+        state.filteredTickets = state.tickets
+        return
+      }
+      const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key as FilterType])
+      if (activeFilters.length === 0) {
+        state.filteredTickets = []
+        return
+      }
+      const newFilteredTickets: TicketType[] = []
+      if (state.filters['no-transfers']) {
+        const filtred = tickets.filter((ticket) => {
+          const transfers = ticket.segments[0].stops.length
+          const secondTransfers = ticket.segments[1].stops.length
+          return transfers === 0 && secondTransfers === 0
+        })
+        newFilteredTickets.push(...filtred)
+      }
+      if (state.filters['1-transfer']) {
+        const filtred = tickets.filter((ticket) => {
+          const transfers = ticket.segments[0].stops.length
+          const secondTransfers = ticket.segments[1].stops.length
+          return (transfers === 1 && secondTransfers <= 1) || (secondTransfers === 1 && transfers <= 1)
+        })
+        newFilteredTickets.push(...filtred)
+      }
+      if (state.filters['2-transfers']) {
+        const filtred = tickets.filter((ticket) => {
+          const transfers = ticket.segments[0].stops.length
+          const secondTransfers = ticket.segments[1].stops.length
+          return (transfers === 2 && secondTransfers <= 2) || (secondTransfers === 2 && transfers <= 2)
+        })
+        newFilteredTickets.push(...filtred)
+      }
+      if (state.filters['3-transfers']) {
+        const filtred = tickets.filter((ticket) => {
+          const transfers = ticket.segments[0].stops.length
+          const secondTransfers = ticket.segments[1].stops.length
+          return (transfers === 3 && secondTransfers <= 3) || (secondTransfers === 3 && transfers <= 3)
+        })
+        newFilteredTickets.push(...filtred)
+      }
+      state.filteredTickets = newFilteredTickets
+    },
     toggleFilters(state, action: PayloadAction<ToggleType>) {
       const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key as FilterType])
       const { name, checked } = action.payload
@@ -55,39 +105,59 @@ const appSlice = createSlice({
     setTab(state, action: PayloadAction<TabType>) {
       state.tab = action.payload
     },
+    updateTab(state) {
+      if (state.tab === 'cheapest') {
+        state.filteredTickets = state.filteredTickets.sort((a, b) => a.price - b.price)
+      }
+      if (state.tab === 'fastest') {
+        state.filteredTickets = state.filteredTickets.sort((a, b) => a.segments[0].duration - b.segments[0].duration)
+      }
+      if (state.tab === 'optimal') {
+        state.filteredTickets = state.filteredTickets.sort(
+          (a, b) => a.price * a.segments[0].duration - b.price * b.segments[0].duration
+        )
+      }
+    },
     addVisibleTickets(state, action) {
       state.visibleTicketsLength = state.visibleTicketsLength + action.payload
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchSearchId.pending, (state) => {
+    builder.addCase(getSearchId.pending, (state) => {
       state.loading = 'pending'
       state.error = null
     })
-    builder.addCase(fetchSearchId.fulfilled, (state, action) => {
+    builder.addCase(getSearchId.fulfilled, (state, action) => {
       state.loading = 'succeeded'
       state.searchId = action.payload
       state.error = null
     })
-    builder.addCase(fetchSearchId.rejected, (state, action) => {
+    builder.addCase(getSearchId.rejected, (state, action) => {
       state.loading = 'failed'
       state.error = action.error.message ? action.error.message : 'Unknown error'
     })
-    builder.addCase(fetchTickets.pending, (state) => {
+    builder.addCase(getTickets.pending, (state) => {
       state.loading = 'pending'
       state.error = null
     })
-    builder.addCase(fetchTickets.fulfilled, (state, action) => {
+    builder.addCase(getTickets.fulfilled, (state, action) => {
+      const newTickets = action.payload.tickets.map((ticket: TicketType) => {
+        return {
+          ...ticket,
+          id: nanoid(),
+        }
+      })
       state.loading = 'succeeded'
-      state.tickets = action.payload.tickets
+      state.tickets = state.tickets.concat(newTickets)
       state.error = null
+      state.stop = action.payload.stop
     })
-    builder.addCase(fetchTickets.rejected, (state, action) => {
+    builder.addCase(getTickets.rejected, (state, action) => {
       state.loading = 'failed'
       state.error = action.error.message ? action.error.message : 'Unknown error'
     })
   },
 })
 
-export const { setTab, toggleFilters, addVisibleTickets } = appSlice.actions
+export const { setTab, toggleFilters, addVisibleTickets, filterTickets, updateTab } = appSlice.actions
 export default appSlice.reducer

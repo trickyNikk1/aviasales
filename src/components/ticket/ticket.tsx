@@ -35,57 +35,60 @@ export default function Ticket({ ticket }: { ticket: TicketType }) {
 
   const logoWidth = '110'
   const logoHeight = '36'
-  const logoSrc = `http://pics.avs.io/${logoWidth}/${logoHeight}/${carrier}.png`
+  const logoSrc = `https://pics.avs.io/${logoWidth}/${logoHeight}/${carrier}.png`
 
   const formatPrice = (price: number) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
   }
   const stopsFormat = (stops: string[]) => {
+    if (stops.length === 0) {
+      return '-'
+    }
     return stops.join(', ')
   }
   return (
     <article className={styles.ticket}>
-      <div className={styles.ticket__header}>
-        <span className={styles.ticket__price}>{formatPrice(price)} Р</span>
-        <img className={styles.ticket__logo} src={logoSrc} alt="logo"></img>
+      <div className={styles.header}>
+        <span className={styles.price}>{formatPrice(price)} Р</span>
+        <img className={styles.logo} src={logoSrc} alt="logo"></img>
       </div>
-      <div className={styles.ticket__info}>
-        <div className={styles.ticket__column}>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>
+      <div className={styles.info}>
+        <div className={styles.column}>
+          <div className={styles.row}>
+            <h3 className={styles.title}>
               {origin} - {destination}
             </h3>
-            <span className={styles.ticket__data}>
+            <span className={styles.data}>
               {formatDateFrom} - {formatDateTo}
             </span>
           </div>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>
+          <div className={styles.row}>
+            <h3 className={styles.title}>
               {secondOrigin} - {secondDestination}
             </h3>
-            <span className={styles.ticket__data}>
+            <span className={styles.data}>
               {formatSecondDateFrom} - {formatSecondDateTo}
             </span>
           </div>
         </div>
-        <div className={styles.ticket__column}>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>в пути</h3>
-            <span className={styles.ticket__data}>{formatDuration(duration)}</span>
+        <div className={styles.column}>
+          <div className={styles.row}>
+            <h3 className={styles.title}>в пути</h3>
+            <span className={styles.data}>{formatDuration(duration)}</span>
           </div>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>в пути</h3>
-            <span className={styles.ticket__data}>{formatDuration(secondDuration)}</span>
+          <div className={styles.row}>
+            <h3 className={styles.title}>в пути</h3>
+            <span className={styles.data}>{formatDuration(secondDuration)}</span>
           </div>
         </div>
-        <div className={styles.ticket__column}>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>{stopsCount(stops)}</h3>
-            <span className={styles.ticket__data}>{stopsFormat(stops)}</span>
+        <div className={styles.column}>
+          <div className={styles.row}>
+            <h3 className={styles.title}>{stopsCount(stops)}</h3>
+            <span className={styles.data}>{stopsFormat(stops)}</span>
           </div>
-          <div className={styles.ticket__row}>
-            <h3 className={styles.ticket__title}>{stopsCount(secondStops)}</h3>
-            <span className={styles.ticket__data}>{stopsFormat(secondStops)}</span>
+          <div className={styles.row}>
+            <h3 className={styles.title}>{stopsCount(secondStops)}</h3>
+            <span className={styles.data}>{stopsFormat(secondStops)}</span>
           </div>
         </div>
       </div>

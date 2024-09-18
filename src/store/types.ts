@@ -7,6 +7,8 @@ type FiltersType = {
 export type TabType = 'cheapest' | 'fastest' | 'optimal'
 
 export type TicketType = {
+  // Идентификатор билета
+  id: string
   // Цена в рублях
   price: number
   // Код авиакомпании (iata)
@@ -48,7 +50,9 @@ export type AppState = {
   error: string | null
   searchId: string | null
   tickets: TicketType[]
+  filteredTickets: TicketType[]
   visibleTicketsLength: number
+  stop: boolean
 }
 
 export type ToggleType = {
