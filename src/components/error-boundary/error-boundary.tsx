@@ -22,7 +22,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className={styles.error}>
-          <h1 className={styles.error__title}>Something went wrong</h1>
+          <h1 className={styles.error__title}>Что-то пошло не так. Мы уже работаем над этим.</h1>
         </div>
       )
     }
