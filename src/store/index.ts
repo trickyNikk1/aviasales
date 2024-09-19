@@ -7,6 +7,11 @@ const store = configureStore({
     app: appReducer,
   },
   devTools: true,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
 })
 export default store
 
