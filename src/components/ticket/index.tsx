@@ -4,7 +4,7 @@ import { format, addMinutes } from 'date-fns'
 import type { TicketType } from '../../store/types'
 
 import styles from './ticket.module.scss'
-export default function Ticket({ ticket }: { ticket: TicketType }) {
+export function Ticket({ ticket }: { ticket: TicketType }) {
   const { carrier, price, segments } = ticket
   const [first, second] = segments
   const { origin, destination, date, stops, duration } = first

@@ -48,6 +48,7 @@ export type AppState = {
   filters: FiltersType
   loading: loadingType
   error: string | null
+  errorStreak: number
   searchId: string | null
   tickets: TicketType[]
   filteredTickets: TicketType[]

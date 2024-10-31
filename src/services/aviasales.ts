@@ -1,4 +1,4 @@
-export default class Aviasales {
+export class Aviasales {
   _apiBase = 'https://aviasales-test-api.kata.academy'
 
   async getSearchId() {

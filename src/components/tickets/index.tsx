@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../../hook'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { getTickets, addVisibleTickets, filterTickets, getSearchId, updateTab } from '../../store/appSlice'
-import Ticket from '../ticket/ticket'
+import { Ticket } from '../ticket'
 import { ReactComponent as Loader } from '../loader/loader.svg'
 
 import styles from './tickets.module.scss'
 
-export default function Tickets() {
+export function Tickets() {
   const dispatch = useAppDispatch()
   const {
     error,

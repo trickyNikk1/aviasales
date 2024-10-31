@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk, nanoid, current } from '@reduxjs/toolkit'
 
-import Aviasales from '../services/aviasales'
+import { Aviasales } from '../services/aviasales'
 
 import type { AppState, FilterType, ToggleType, TabType, TicketType } from './types'
 
@@ -27,6 +27,7 @@ const initialState: AppState = {
   },
   loading: 'idle',
   error: null,
+  errorStreak: 0,
   searchId: null,
   tickets: [],
   filteredTickets: [],
@@ -45,47 +46,48 @@ const appSlice = createSlice({
         return
       }
       const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key as FilterType])
-      if (activeFilters.length === 0) {
+      if (!activeFilters.length) {
         state.filteredTickets = []
         return
       }
       const newFilteredTickets: TicketType[] = []
       if (state.filters['no-transfers']) {
         const filtred = tickets.filter((ticket) => {
-          const transfers = ticket.segments[0].stops.length
-          const secondTransfers = ticket.segments[1].stops.length
-          return transfers === 0 && secondTransfers === 0
+          const outboundStops = ticket.segments[0].stops.length
+          const inboundStops = ticket.segments[1].stops.length
+          return !outboundStops && !inboundStops
         })
         newFilteredTickets.push(...filtred)
       }
       if (state.filters['1-transfer']) {
         const filtred = tickets.filter((ticket) => {
-          const transfers = ticket.segments[0].stops.length
-          const secondTransfers = ticket.segments[1].stops.length
-          return (transfers === 1 && secondTransfers <= 1) || (secondTransfers === 1 && transfers <= 1)
+          const outboundStops = ticket.segments[0].stops.length
+          const inboundStops = ticket.segments[1].stops.length
+          return (outboundStops === 1 && inboundStops <= 1) || (inboundStops === 1 && outboundStops <= 1)
         })
         newFilteredTickets.push(...filtred)
       }
       if (state.filters['2-transfers']) {
         const filtred = tickets.filter((ticket) => {
-          const transfers = ticket.segments[0].stops.length
-          const secondTransfers = ticket.segments[1].stops.length
-          return (transfers === 2 && secondTransfers <= 2) || (secondTransfers === 2 && transfers <= 2)
+          const outboundStops = ticket.segments[0].stops.length
+          const inboundStops = ticket.segments[1].stops.length
+          return (outboundStops === 2 && inboundStops <= 2) || (inboundStops === 2 && outboundStops <= 2)
         })
         newFilteredTickets.push(...filtred)
       }
       if (state.filters['3-transfers']) {
         const filtred = tickets.filter((ticket) => {
-          const transfers = ticket.segments[0].stops.length
-          const secondTransfers = ticket.segments[1].stops.length
-          return (transfers === 3 && secondTransfers <= 3) || (secondTransfers === 3 && transfers <= 3)
+          const outboundStops = ticket.segments[0].stops.length
+          const inboundStops = ticket.segments[1].stops.length
+          return (outboundStops === 3 && inboundStops <= 3) || (inboundStops === 3 && outboundStops <= 3)
         })
         newFilteredTickets.push(...filtred)
       }
       state.filteredTickets = newFilteredTickets
     },
     toggleFilters(state, action: PayloadAction<ToggleType>) {
-      const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key as FilterType])
+      const allFilters = Object.keys(state.filters)
+      const activeFilters = allFilters.filter((key) => state.filters[key as FilterType])
       const { name, checked } = action.payload
       if (name === 'all' && checked) {
         state.filters = initialState.filters
@@ -95,7 +97,7 @@ const appSlice = createSlice({
         for (const key in state.filters) {
           state.filters[key as FilterType] = false
         }
-      } else if (name !== 'all' && !checked && activeFilters.length === 5) {
+      } else if (name !== 'all' && !checked && activeFilters.length === allFilters.length) {
         state.filters.all = false
         state.filters[name] = !state.filters[name]
       } else {
@@ -107,13 +109,15 @@ const appSlice = createSlice({
     },
     updateTab(state) {
       if (state.tab === 'cheapest') {
-        state.filteredTickets = state.filteredTickets.sort((a, b) => a.price - b.price)
+        state.filteredTickets = state.filteredTickets.toSorted((a, b) => a.price - b.price)
       }
       if (state.tab === 'fastest') {
-        state.filteredTickets = state.filteredTickets.sort((a, b) => a.segments[0].duration - b.segments[0].duration)
+        state.filteredTickets = state.filteredTickets.toSorted(
+          (a, b) => a.segments[0].duration - b.segments[0].duration
+        )
       }
       if (state.tab === 'optimal') {
-        state.filteredTickets = state.filteredTickets.sort(
+        state.filteredTickets = state.filteredTickets.toSorted(
           (a, b) => a.price * a.segments[0].duration - b.price * b.segments[0].duration
         )
       }
@@ -150,11 +154,16 @@ const appSlice = createSlice({
       state.loading = 'succeeded'
       state.tickets = state.tickets.concat(newTickets)
       state.error = null
+      state.errorStreak = 0
       state.stop = action.payload.stop
     })
     builder.addCase(getTickets.rejected, (state, action) => {
       state.loading = 'failed'
-      state.error = action.error.message ? action.error.message : 'Unknown error'
+      state.errorStreak = state.errorStreak + 1
+      if (state.errorStreak > 5) {
+        state.error = action.error.message ? action.error.message : 'Unknown error'
+        state.errorStreak = 0
+      }
     })
   },
 })

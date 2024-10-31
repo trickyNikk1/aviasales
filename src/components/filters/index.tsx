@@ -1,12 +1,12 @@
 import React from 'react'
 
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { toggleFilters, filterTickets, updateTab } from '../../store/appSlice'
-import { useAppDispatch, useAppSelector } from '../../hook'
 import type { FilterType } from '../../store/types'
 
 import styles from './filters.module.scss'
 
-export default function Filters() {
+export function Filters() {
   const dispatch = useAppDispatch()
 
   const { filters } = useAppSelector((state) => state.app)

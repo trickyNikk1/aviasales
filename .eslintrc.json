@@ -22,7 +22,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier", "import", "jsx-a11y"],
+  "plugins": ["react", "prettier", "import", "jsx-a11y", "@typescript-eslint"],
   "rules": {
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "prettier/prettier": "error",
@@ -59,7 +59,8 @@
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"],
         "moduleDirectory": ["node_modules", "src/"]
-      }
+      },
+      "typescript": {}
     }
   }
 }

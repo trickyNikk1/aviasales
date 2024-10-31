@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../../hook'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { setTab, updateTab } from '../../store/appSlice'
 import type { TabType } from '../../store/types'
 
 import styles from './tabs.module.scss'
 
-export default function Tabs() {
+export function Tabs() {
   const active = useAppSelector((state) => state.app.tab)
   const dispatch = useAppDispatch()
 
