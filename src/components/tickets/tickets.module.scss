@@ -1,42 +1,6 @@
-@import '../../variables.scss';
-.tickets {
-    display: flex;
-    flex-direction: column;
-    
-    gap: 20px;
-}
+.container {
+  display: flex;
+  flex-direction: column;
 
-.button_show {
-    background-color: #2196F3;
-    border: 1px solid #2196F3;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-}
-.button_show:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    transition: all 0.3s ease;
-}
-.loader {
-    align-self: center;
-    width: 30px;
-    height: 30px;
-}
-
-.error {
-    padding: 20px;
-    color: $color-text-white;
-    background-color: $error-color-background;
-    border: 2px solid $error-color;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;   
-}
-.warning {
-    padding: 20px;
-    color: $color-text-white;
-    background-color: $background-color-active;
-    border: 2px solid $background-color-active;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+  gap: 20px;
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ReactComponent as Logo } from '../logo/logo.svg'
-import { ErrorBoundary, Filters, Tabs, Tickets, Layout } from '../index'
+import { ReactComponent as Logo } from '@svgs/logo.svg'
+import { ErrorBoundary, Filters, Tabs, Tickets, Layout } from '@components/index'
 
 import styles from './app.module.scss'
 

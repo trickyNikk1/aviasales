@@ -1,43 +1,44 @@
-@import '../../variables.scss';
 .ticket {
-    display: flex;
-    flex-direction: column;
-    max-width: 502px;
-    padding: 20px;
-    border-radius: $border-radius;
-    background-color: $background-color-element;
-    box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  max-width: 502px;
+  padding: 20px;
+  border-radius: $border-radius;
+  background-color: $background-color-element;
+  box-shadow: $box-shadow;
 }
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .price {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 24px;
-    color: $color-text-blue;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 24px;
+  color: $color-text-blue;
 }
-.logo {}
+.logo {
+}
 .info {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 20px
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
 }
 .column {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.row {}
+.row {
+}
 .title {
-    font-weight: 400;
-    line-height: 18px;
-    color: $color-text-light;
-    text-transform: uppercase;
+  font-weight: 400;
+  line-height: 18px;
+  color: $color-text-light;
+  text-transform: uppercase;
 }
 .data {
-    font-size: 14px;
+  font-size: 14px;
 }

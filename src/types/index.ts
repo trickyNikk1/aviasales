@@ -1,8 +1,9 @@
+import { SerializedError } from '@reduxjs/toolkit'
+
 export type loadingType = 'idle' | 'pending' | 'succeeded' | 'failed'
 
-export type FilterType = 'all' | 'no-transfers' | '1-transfer' | '2-transfers' | '3-transfers'
-type FiltersType = {
-  [K in FilterType]: boolean
+export type FiltersType = {
+  [K in string]: boolean
 }
 export type TabType = 'cheapest' | 'fastest' | 'optimal'
 
@@ -47,7 +48,7 @@ export type AppState = {
   tab: TabType
   filters: FiltersType
   loading: loadingType
-  error: string | null
+  error: SerializedError | null
   errorStreak: number
   searchId: string | null
   tickets: TicketType[]
@@ -57,7 +58,7 @@ export type AppState = {
 }
 
 export type ToggleType = {
-  name: FilterType
+  name: string
   checked: boolean
 }
 

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk, nanoid, current } from '@reduxjs/toolkit'
 
-import { Aviasales } from '../services/aviasales'
+import { Aviasales } from '@services/aviasales'
 
-import type { AppState, FilterType, ToggleType, TabType, TicketType } from './types'
+import type { AppState, ToggleType, TabType, TicketType } from '../types'
 
 const aviasales = new Aviasales()
 
@@ -45,7 +45,7 @@ const appSlice = createSlice({
         state.filteredTickets = state.tickets
         return
       }
-      const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key as FilterType])
+      const activeFilters = Object.keys(state.filters).filter((key) => state.filters[key])
       if (!activeFilters.length) {
         state.filteredTickets = []
         return
@@ -87,7 +87,7 @@ const appSlice = createSlice({
     },
     toggleFilters(state, action: PayloadAction<ToggleType>) {
       const allFilters = Object.keys(state.filters)
-      const activeFilters = allFilters.filter((key) => state.filters[key as FilterType])
+      const activeFilters = allFilters.filter((key) => state.filters[key])
       const { name, checked } = action.payload
       if (name === 'all' && checked) {
         state.filters = initialState.filters
@@ -95,7 +95,7 @@ const appSlice = createSlice({
         state.filters = initialState.filters
       } else if (name === 'all' && !checked) {
         for (const key in state.filters) {
-          state.filters[key as FilterType] = false
+          state.filters[key] = false
         }
       } else if (name !== 'all' && !checked && activeFilters.length === allFilters.length) {
         state.filters.all = false
@@ -138,7 +138,7 @@ const appSlice = createSlice({
     })
     builder.addCase(getSearchId.rejected, (state, action) => {
       state.loading = 'failed'
-      state.error = action.error.message ? action.error.message : 'Unknown error'
+      state.error = action.error
     })
     builder.addCase(getTickets.pending, (state) => {
       state.loading = 'pending'
@@ -161,7 +161,7 @@ const appSlice = createSlice({
       state.loading = 'failed'
       state.errorStreak = state.errorStreak + 1
       if (state.errorStreak > 5) {
-        state.error = action.error.message ? action.error.message : 'Unknown error'
+        state.error = action.error
         state.errorStreak = 0
       }
     })

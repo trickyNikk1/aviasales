@@ -18,10 +18,15 @@
     "baseUrl": "src",
     "paths": {
       "@components/*": ["components/*"],
+      "@assets/*": ["assets/*"],
+      "@svgs/*": ["assets/svgs/*"],
       "@services/*": ["services/*"],
       "@hooks/*": ["hooks/*"],
       "@store/*": ["store/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@my-types/*": ["types/*"],
+      "@styles/*": ["styles/*"],
+      "@hoc/*": ["hoc/*"]
     }
   },
   "include": ["src"]

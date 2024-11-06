@@ -1,0 +1,16 @@
+.error {
+  padding: 20px;
+  color: $color-text-white;
+  background-color: $error-color-background;
+  border: 2px solid $error-color;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+}
+.info {
+  padding: 20px;
+  color: $color-text-white;
+  background-color: $background-color-active;
+  border: 2px solid $background-color-active;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+}

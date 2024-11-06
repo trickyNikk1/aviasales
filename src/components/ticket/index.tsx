@@ -1,97 +1,65 @@
 import React from 'react'
-import { format, addMinutes } from 'date-fns'
 
-import type { TicketType } from '../../store/types'
+import type { TicketType } from '../../types'
 
+import { formatPrice, itineraryDateRange, stopsCount, stopsFormat, formatDuration } from './ticket.helpers'
 import styles from './ticket.module.scss'
+
 export function Ticket({ ticket }: { ticket: TicketType }) {
   const { carrier, price, segments } = ticket
-  const [first, second] = segments
-  const { origin, destination, date, stops, duration } = first
+  const [outboundSegment, inboundSegment] = segments
   const {
-    origin: secondOrigin,
-    destination: secondDestination,
-    date: secondDate,
-    stops: secondStops,
-    duration: secondDuration,
-  } = second
+    origin: outboundOrigin,
+    destination: outboundDestination,
+    date: outboundDate,
+    stops: outboundStops,
+    duration: outboundDuration,
+  } = outboundSegment
+  const {
+    origin: inboundOrigin,
+    destination: inboundDestination,
+    date: inboundDate,
+    stops: inboundStops,
+    duration: inboundDuration,
+  } = inboundSegment
 
-  const formatDateFrom = format(new Date(date), 'HH:mm')
-  const formatDateTo = format(addMinutes(new Date(date), duration), 'HH:mm')
+  const ticketDataStructure = [
+    [
+      { title: `${outboundOrigin} - ${outboundDestination}`, data: itineraryDateRange(outboundDate, outboundDuration) },
+      { title: `${inboundOrigin} - ${inboundDestination}`, data: itineraryDateRange(inboundDate, inboundDuration) },
+    ],
+    [
+      { title: 'В пути', data: formatDuration(outboundDuration) },
+      { title: 'В пути', data: formatDuration(inboundDuration) },
+    ],
+    [
+      { title: stopsCount(outboundStops), data: stopsFormat(outboundStops) },
+      { title: stopsCount(inboundStops), data: stopsFormat(inboundStops) },
+    ],
+  ]
 
-  const formatSecondDateFrom = format(new Date(secondDate), 'HH:mm')
-  const formatSecondDateTo = format(addMinutes(new Date(secondDate), secondDuration), 'HH:mm')
-
-  const formatDuration = (duration: number) => {
-    const hours = Math.floor(duration / 60)
-    const minutes = duration % 60
-    return `${hours}ч ${minutes}м`
-  }
-
-  const stopsCount = (stops: string[]) => {
-    const text = stops.length === 1 ? 'пересадка' : 'пересадки'
-    return stops.length ? `${stops.length} ${text}` : 'Без пересадок'
-  }
-
-  const logoWidth = '110'
-  const logoHeight = '36'
-  const logoSrc = `https://pics.avs.io/${logoWidth}/${logoHeight}/${carrier}.png`
-
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-  }
-  const stopsFormat = (stops: string[]) => {
-    if (stops.length === 0) {
-      return '-'
-    }
-    return stops.join(', ')
-  }
   return (
-    <article className={styles.ticket}>
+    <div className={styles.ticket}>
       <div className={styles.header}>
         <span className={styles.price}>{formatPrice(price)} Р</span>
-        <img className={styles.logo} src={logoSrc} alt="logo"></img>
+        <img className={styles.logo} src={`https://pics.avs.io/110/36/${carrier}.png`} alt="logo" />
       </div>
       <div className={styles.info}>
-        <div className={styles.column}>
-          <div className={styles.row}>
-            <h3 className={styles.title}>
-              {origin} - {destination}
-            </h3>
-            <span className={styles.data}>
-              {formatDateFrom} - {formatDateTo}
-            </span>
-          </div>
-          <div className={styles.row}>
-            <h3 className={styles.title}>
-              {secondOrigin} - {secondDestination}
-            </h3>
-            <span className={styles.data}>
-              {formatSecondDateFrom} - {formatSecondDateTo}
-            </span>
-          </div>
-        </div>
-        <div className={styles.column}>
-          <div className={styles.row}>
-            <h3 className={styles.title}>в пути</h3>
-            <span className={styles.data}>{formatDuration(duration)}</span>
-          </div>
-          <div className={styles.row}>
-            <h3 className={styles.title}>в пути</h3>
-            <span className={styles.data}>{formatDuration(secondDuration)}</span>
-          </div>
-        </div>
-        <div className={styles.column}>
-          <div className={styles.row}>
-            <h3 className={styles.title}>{stopsCount(stops)}</h3>
-            <span className={styles.data}>{stopsFormat(stops)}</span>
-          </div>
-          <div className={styles.row}>
-            <h3 className={styles.title}>{stopsCount(secondStops)}</h3>
-            <span className={styles.data}>{stopsFormat(secondStops)}</span>
-          </div>
-        </div>
+        {ticketDataStructure.map((column, index) => {
+          return (
+            <div className={styles.column} key={index}>
+              {column.map((row, i) => {
+                return (
+                  <div key={row.title + i}>
+                    <h3 className={styles.title}>{row.title}</h3>
+                    <span className={styles.data}>{row.data}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })}
       </div>
-    </article>
+    </div>
   )
 }
